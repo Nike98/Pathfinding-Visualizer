@@ -1,0 +1,92 @@
+/* Board */
+.grid {
+  margin: 100px 0 0;
+}
+
+/* Header */
+body {
+  font-family: "Lato", sans-serif;
+}
+
+/* Fixed sidenav, full height */
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Style the sidenav links and the dropdown button */
+.sidenav button,
+.dropdown-btn {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+/* On mouse hover */
+.sidenav button:hover,
+.dropdown-btn:hover {
+  color: #f1f1f1;
+}
+
+/* Main content */
+.main {
+  margin-left: 200px;
+  font-size: 20px;
+}
+
+/* Add an active class to the active dropdown button */
+.active {
+  background-color: green;
+  color: white;
+}
+
+/* Dropdown container(hidden by default). */
+.dropdown-container {
+  display: none;
+  background-color: #262626;
+  padding-left: 8px;
+}
+
+#bfs_d,
+#bfs_nd,
+#dfs_d,
+#dfs_nd,
+#dijkstra_d,
+#dijkstra_nd,
+#astar_d,
+#astar_nd {
+  font-size: 15px;
+  margin-left: 15px;
+  display: none;
+}
+
+/* Caret down icon */
+.fa-caret-down {
+  float: right;
+  padding-left: 8px;
+}
+
+/* Media queries for responsiveness */
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav button {
+    font-size: 18px;
+  }
+}
