@@ -89,7 +89,7 @@ function getAllNodes(grid) {
 }
 
 function getClosestUnvisitedNode(allNodes) {
-  let closestnode = null;
+  let closestNode = null;
   let minDistance = Infinity;
 
   for (const node of allNodes) {
@@ -99,8 +99,8 @@ function getClosestUnvisitedNode(allNodes) {
       minDistance = node.distance;
     }
   }
-  console.log(closestnode);
-  return closestnode;
+  console.log(closestNode);
+  return closestNode;
 }
 
 // Backtracks from the finishNode to find the shortest path.
