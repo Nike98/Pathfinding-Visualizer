@@ -184,6 +184,118 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
+  clearBoard() {
+    const grid = getInitialGrid();
+
+    for (let row = 0; row < grid.length; ++row) {
+      for (let col = 0; col < grid[0].length; ++col)
+        document.getElementById(`node-${row}-${col}`).className = "node";
+    }
+
+    this.setState({
+      grid: grid,
+      isPlaceStart: false,
+      isPlaceEnd: false,
+      isPlaceWeight: false,
+      isPlaceWall: false,
+      startPresent: false,
+      endPresent: false,
+      isMousePressed: false,
+    });
+
+    this.enableExceptClearboard();
+    START_NODE_ROW = -1;
+    START_NODE_COL = -1;
+    FINISH_NODE_ROW = -1;
+    FINISH_NODE_COL = -1;
+    stopAnimating = false;
+    pause = false;
+  }
+
+  disableExceptClearboard() {
+    // Disable Start and End node when the algorithm starts working
+    const startNode = document.getElementById("start_node");
+    startNode.disabled = true;
+    startNode.style.background = "white";
+
+    const endNode = document.getElementById("end_node");
+    endNode.disabled = true;
+    endNode.style.background = "white";
+
+    // Disable all algorithm buttons
+    document.getElementsByClassName("dropdown-btn")[0].style.background =
+      "white";
+
+    const visualizeButtons = document.getElementsByClassName("visualize");
+    for (const button of visualizeButtons) button.disabled = true;
+
+    // Disable internal algorithm buttons
+    document.getElementById("bfs_d").disabled = true;
+    document.getElementById("bfs_nd").disabled = true;
+    document.getElementById("dfs_d").disabled = true;
+    document.getElementById("dfs_nd").disabled = true;
+    document.getElementById("dijkstra_d").disabled = true;
+    document.getElementById("dijkstra_nd").disabled = true;
+    document.getElementById("astar_d").disabled = true;
+    document.getElementById("astar_nd").disabled = true;
+
+    // Disable clear button
+    document.getElementById("clear").disabled = true;
+  }
+
+  getPrevBoard() {
+    const grid = this.refreshBoardForPathFinding(this.state.grid);
+
+    for (const row of grid) {
+      for (const node of row) {
+        let flag = false;
+
+        if (node.isStart === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-start";
+          flag = true;
+        }
+
+        if (node.isEnd === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-finish";
+          flag = true;
+        }
+
+        if (node.isWall === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-wall";
+          flag = true;
+        }
+
+        if (node.isWeight === true) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node node-weight";
+          flag = true;
+        }
+
+        // Rest other nodes which were visualized as visited & shortest path nodes
+        if (flag === false) {
+          document.getElementById(`node-${node.row}-${node.col}`).className =
+            "node";
+        }
+      }
+    }
+
+    this.setState({ grid });
+    this.enableExceptClearboard();
+  }
+
+  handleAlgorithmsDropdown(index) {
+    let algorithmsContainer = document.getElementsByClassName(
+      "dropdown-container"
+    )[index].style;
+
+    if (algorithmsContainer.display === "block")
+      algorithmsContainer.display = "none";
+    else algorithmsContainer.display = "block";
+  }
+
   visualizeDijkstra(diagonal) {
     if (START_NODE_ROW == -1 || START_NODE_COL == -1) {
       alert("Start Node is not selected");
@@ -264,6 +376,17 @@ export default class PathfindingVisualizer extends Component {
       startNode,
       finishNode
     );
+  }
+
+  handleEachAlgorithmDropdown(algo) {
+    let diagonal = document.getElementById(algo + "_d").style;
+    let noDiagonal = document.getElementById(algo + "_nd").style;
+
+    if (diagonal.display === "block") diagonal.display = "none";
+    else diagonal.display = "block";
+
+    if (noDiagonal.display === "block") noDiagonal.display = "none";
+    else noDiagonal.display = "block";
   }
 
   visualizeAStar(diagonal) {
