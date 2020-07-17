@@ -83,7 +83,7 @@ export default class PathfindingVisualizer extends Component {
     this.setState({ isPlaceWeight: true });
   }
 
-  handleMouseclick(row, col) {
+  handleMouseClick(row, col) {
     console.log("A cell is clicked");
 
     const {
@@ -241,6 +241,210 @@ export default class PathfindingVisualizer extends Component {
 
     // Disable clear button
     document.getElementById("clear").disabled = true;
+  }
+
+  enableExceptClearboard() {
+    // Enable Start and End node
+    const startNode = document.getElementById("start_node");
+    startNode.disabled = false;
+    startNode.style.background = "#111";
+
+    const endNode = document.getElementById("end_node");
+    endNode.disabled = false;
+    endNode.style.background = "#111";
+
+    // Enable all algorithm buttons
+    document.getElementsByClassName("dropdown-btn")[0].style.background =
+      "#111";
+    const visualizeButtons = document.getElementsByClassName("visualize");
+    for (const button of visualizeButtons) button.disabled = false;
+
+    // Disable internal algorithm button
+    document.getElementById("bfs_d").disabled = false;
+    document.getElementById("bfs_nd").disabled = false;
+    document.getElementById("dfs_d").disabled = false;
+    document.getElementById("dfs_nd").disabled = false;
+    document.getElementById("dijkstra_d").disabled = false;
+    document.getElementById("dijkstra_nd").disabled = false;
+    document.getElementById("astar_d").disabled = false;
+    document.getElementById("astar_nd").disabled = false;
+
+    // Enable clear button
+    document.getElementById("clear").disabled = false;
+  }
+
+  render() {
+    const { grid } = this.state;
+
+    return (
+      <>
+        <div className="sidenav">
+          <button id="start_node" onClick={() => this.placeStartNode()}>
+            Start Node
+          </button>
+          <button id="end_node" onClick={() => this.placeEndNode()}>
+            End Node
+          </button>
+          <button
+            id="wall_node"
+            onClick={() => this.placeWallNode()}
+            title="Click on any cell and then keep moving to create walls. Click again to stop"
+          >
+            Wall Node
+          </button>
+          <button
+            id="weight_node"
+            onClick={() => this.placeWeightNode()}
+            title="Click on any cell and then keep moving to create weights. Click again to stop"
+          >
+            Weight Node
+          </button>
+
+          {/* Drop down of Pathfinding algorithm BEGIN */}
+          <button
+            className="dropdown-btn"
+            onClick={() => this.handleAlgorithmsDropdown(0)}
+          >
+            Pathfinding Algorithms<i className="fa fa-caret-down"></i>
+          </button>
+          <div className="dropdown-container" id="dropdown-container">
+            {/* BFS */}
+            <button
+              className="visualize"
+              onClick={() => this.handleAlgorithmsDropdown("bfs")}
+            >
+              Visualize BFS Algorithm
+            </button>
+            <button id="bfs_d" onClick={() => this.visualizeBFS(true)}>
+              Diagonal Movement Allowed
+            </button>
+            <button id="bfs_nd" onClick={() => this.visualizeBFS(false)}>
+              No Diagonal Movement Allowed
+            </button>
+
+            {/* DFS */}
+            <button
+              className="visualize"
+              onClick={() => this.handleAlgorithmsDropdown("dfs")}
+            >
+              Visualize DFS Algorithm
+            </button>
+            <button id="dfs_d" onClick={() => this.visualizeDFS(true)}>
+              Diagonal Movement Allowed
+            </button>
+            <button id="dfs_nd" onClick={() => this.visualizeDFS(false)}>
+              No Diagonal Movement Allowed
+            </button>
+
+            {/* Dijkstra */}
+            <button
+              className="visualize"
+              onClick={() => this.handleAlgorithmsDropdown("dijkstra")}
+            >
+              Visualize Dijkstra's Algorithm
+            </button>
+            <button
+              id="dijkstra_d"
+              onClick={() => this.visualizeDijkstra(true)}
+            >
+              Diagonal Movement Allowed
+            </button>
+            <button
+              id="dijkstra_nd"
+              onClick={() => this.visualizeDijkstra(false)}
+            >
+              No Diagonal Movement Allowed
+            </button>
+
+            {/* A* Search */}
+            <button
+              className="visualize"
+              onClick={() => this.handleAlgorithmsDropdown("astar")}
+            >
+              Visualize A* Search Algorithm
+            </button>
+            <button id="astar_d" onClick={() => this.visualizeAStar(true)}>
+              Diagonal Movement Allowed
+            </button>
+            <button id="astar_nd" onClick={() => this.visualizeAStar(false)}>
+              No Diagonal Movement Allowed
+            </button>
+          </div>
+          {/* Dropdown of Pathfinding algorithms END */}
+
+          {/* Dropdown of Maze Algorithms BEGIN */}
+          <button
+            className="dropdown-btn"
+            onClick={() => this.handleAlgorithmsDropdown(1)}
+          >
+            Maze Algorithms<i className="fa fa-caret-down"></i>
+          </button>
+          <div className="dropdown-container" id="dropdown-container">
+            {/* Randomized DFs */}
+            <button
+              className="visualize"
+              onClick={() => this.visualizeDFSMaze()}
+            >
+              Visualize Randomized DFS Algorithm
+            </button>
+
+            {/* Recursive Division */}
+            <button
+              className="visualize"
+              onClick={() => this.visualizeRecursiveDivision()}
+            >
+              Visualize Recursive Division Algorithm
+            </button>
+          </div>
+          {/* Dropdown of Maze Algorithm END */}
+
+          <button id="clear" onClick={() => this.clearBoard()}>
+            Clear Board
+          </button>
+          <button id="prevGrid" onClick={() => this.getPrevBoard()}>
+            Use Previous Board
+          </button>
+          <button id="stopAnimating">Stop Animation</button>
+          <button id="pauseAnimating">Pause Animation</button>
+          <button id="playAnimating">Play Animation</button>
+        </div>
+
+        <div className="main info">
+          Adding WALL on cell makes it <strong>impenetrable</strong> <br />
+          Adding WEIGHT on cell <strong>increases</strong> the cost to pass
+          through it. Here the cost is multiplied 10 times.
+        </div>
+
+        <div className="grid main">
+          {grid.map((row, rowIdx) => {
+            return (
+              <div key={rowIdx}>
+                {row.map((node, nodeIdx) => {
+                  const { row, col, isEnd, isStart, isWall, isWeight } = node;
+                  return (
+                    <Node
+                      key={nodeIdx}
+                      col={col}
+                      isEnd={isEnd}
+                      isStart={isStart}
+                      isWall={isWall}
+                      isWeight={isWeight}
+                      onMouseClick={(row, col) =>
+                        this.handleMouseClick(row, col)
+                      }
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
+                      row={row}
+                    ></Node>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </>
+    );
   }
 
   getPrevBoard() {
@@ -509,7 +713,7 @@ export default class PathfindingVisualizer extends Component {
     this.animateMaze(visitedNodesInOrder);
   }
 
-  visualizeRe4cursiveDivision() {
+  visualizeRecursiveDivision() {
     let { grid } = this.state;
     const visitedNodesInOrder = recursiveDivision(grid);
     this.animateMaze(visitedNodesInOrder);
